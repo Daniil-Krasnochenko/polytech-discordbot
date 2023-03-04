@@ -1,32 +1,18 @@
-import discord.ext.commands
+import json
 
-from Bot import Bot
-from config import TOKEN
-
-bot = Bot(TOKEN)
-
-
-@bot.command()
-@discord.ext.commands.has_permissions(administator=True)
-async def load(ctx, extensions):
-    await bot.load_extension(f"cogs.{extensions}")
-    await ctx.author.send("Done")
-
-
-@bot.command()
-@discord.ext.commands.has_permissions(administator=True)
-async def unload(ctx, extensions):
-    await bot.unload_extension(f"cogs.{extensions}")
-    await ctx.author.send("Done")
-
-
-@bot.command()
-@discord.ext.commands.has_permissions(administator=True)
-async def reload(ctx, extensions):
-    await bot.unload_extension(f"cogs.{extensions}")
-    await bot.load_extension(f"cogs.{extensions}")
-    await ctx.author.send("Done")
-
-
-if __name__ == '__main__':
-    bot.run()
+import discord
+from discord.ext import commands
+intents = discord.Intents.all()
+file = open('config.json', 'r')
+config = json.load(file)
+bot = commands.Bot(config['prefix'],intents=intents)
+@bot.command(name = 'com1')
+async def com1(ctx):
+    await ctx.send(f'{ctx.author.mention}Hi!')
+@bot.command(name = 'button')
+async def button(ctx):
+    button = discord.ui.Button(label='Authorization!', style=discord.ButtonStyle.green)
+    view = discord.ui.View()
+    view.add_item(button)
+    await ctx.send('Here is a button:', view=view)
+bot.run(config['token'])
